@@ -9,15 +9,15 @@ import { HistoryPage } from "./pages/HistoryPage";
 import { CreatorsPage } from "./pages/CreatorsPage";
 import { FAQPage } from "./pages/FAQPage";
 
-import { ErrorBoundary } from "./components/ErrorBoundary";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     errorElement: (
-      <div className="h-screen bg-black flex flex-col items-center justify-center p-12 text-center">
-        <h1 className="text-4xl font-display font-bold mb-4 text-white">System Breach Detected</h1>
-        <p className="text-text-muted mb-8 max-w-md">Our 3D Core had a synchronization issue. Please refresh or return home.</p>
+      <div className="h-screen bg-black flex flex-col items-center justify-center p-12 text-center text-white">
+        <h1 className="text-4xl font-display font-bold mb-4">System Breach Detected</h1>
+        <p className="text-gray-400 mb-8 max-w-md">Our 3D Core had a synchronization issue. Please refresh or return home.</p>
         <button onClick={() => window.location.href = '/'} className="px-8 py-4 bg-accent-purple rounded-full text-white font-bold">
           Restore Terminal
         </button>
@@ -30,27 +30,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        Component: Dashboard,
+        element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
       },
       {
         path: "/setup",
-        Component: SetupPage,
+        element: <ProtectedRoute><SetupPage /></ProtectedRoute>,
       },
       {
         path: "/interview/:id/chat",
-        Component: InterviewChatPage,
+        element: <ProtectedRoute><InterviewChatPage /></ProtectedRoute>,
       },
       {
         path: "/interview/:id/voice",
-        Component: InterviewVoicePage,
+        element: <ProtectedRoute><InterviewVoicePage /></ProtectedRoute>,
       },
       {
         path: "/feedback",
-        Component: FeedbackPage,
+        element: <ProtectedRoute><FeedbackPage /></ProtectedRoute>,
       },
       {
         path: "/history",
-        Component: HistoryPage,
+        element: <ProtectedRoute><HistoryPage /></ProtectedRoute>,
       },
       {
         path: "/creators",
