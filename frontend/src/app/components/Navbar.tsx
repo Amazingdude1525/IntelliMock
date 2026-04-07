@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router";
 import { Zap } from "lucide-react";
 import { useUser, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { motion } from "motion/react";
 
 interface NavbarProps {
   transparent?: boolean;
@@ -25,73 +26,75 @@ export function Navbar({ transparent = false }: NavbarProps) {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all border-b border-white/5 ${
-        transparent
-          ? "bg-gradient-to-b from-black/80 to-transparent"
-          : "backdrop-blur-2xl bg-black/80"
-      }`}
+    <motion.nav
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="fixed top-0 left-0 right-0 z-[100] border-b border-white/[0.06]"
+      style={{
+        background: transparent 
+          ? 'linear-gradient(to bottom, rgba(10,10,15,0.9), transparent)'
+          : 'rgba(10,10,15,0.7)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#7C3AED]/40 to-transparent" />
+      
+      <div className="max-w-7xl mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative w-9 h-9 rounded-xl bg-accent-purple flex items-center justify-center overflow-hidden border border-white/10">
+            <div className="relative w-9 h-9 rounded-xl bg-[#7C3AED] flex items-center justify-center overflow-hidden border border-white/10 shadow-[0_0_15px_rgba(124,58,237,0.3)] group-hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] transition-shadow">
                <Zap className="w-5 h-5 text-white relative z-10" />
-               <div className="absolute inset-0 bg-gradient-to-tr from-accent-blue/40 to-transparent animate-pulse" />
+               <div className="absolute inset-0 bg-gradient-to-tr from-[#06B6D4]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-display font-black tracking-tighter italic leading-none">
-                INTELLI<span className="text-accent-purple">MOCK</span>
+              <span className="text-xl font-bold tracking-tight leading-none" style={{ fontFamily: "'Syne', sans-serif" }}>
+                INTELLI<span className="text-[#7C3AED]">MOCK</span>
               </span>
-              <span className="text-[8px] font-mono text-accent-green uppercase tracking-[0.4em] font-bold">Elite Terminal</span>
+              <span className="text-[7px] font-mono text-[#22C55E] uppercase tracking-[0.4em] font-bold">Elite Terminal</span>
             </div>
           </Link>
 
           {/* Center Links */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-8">
             {(!isLanding || user) && (
               <>
-                <Link
-                  to="/dashboard"
-                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                    location.pathname === "/dashboard" ? "text-accent-purple" : "text-text-muted"
-                  }`}
-                >
-                  Dashboard
-                  <div className={`absolute -bottom-1 left-0 h-[1px] bg-accent-purple transition-all duration-300 ${location.pathname === "/dashboard" ? "w-full" : "w-0 group-hover:w-full"}`} />
-                </Link>
-                <Link
-                  to="/history"
-                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                    location.pathname === "/history" ? "text-accent-purple" : "text-text-muted"
-                  }`}
-                >
-                  History
-                </Link>
-                <Link
-                  to="/creators"
-                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                    location.pathname === "/creators" ? "text-accent-purple" : "text-text-muted"
-                  }`}
-                >
-                  Creators
-                </Link>
+                {[
+                  { to: "/dashboard", label: "Dashboard" },
+                  { to: "/history", label: "History" },
+                  { to: "/creators", label: "Creators" },
+                ].map(link => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-[#7C3AED] relative group py-1 ${
+                      location.pathname === link.to ? "text-[#7C3AED]" : "text-gray-400"
+                    }`}
+                  >
+                    {link.label}
+                    <div className={`absolute -bottom-1 left-0 h-[2px] bg-[#7C3AED] rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(124,58,237,0.5)] ${
+                      location.pathname === link.to ? "w-full" : "w-0 group-hover:w-full"
+                    }`} />
+                  </Link>
+                ))}
               </>
             )}
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <SignedIn>
               <div className="hidden lg:flex flex-col items-end mr-2">
-                <span className="text-[10px] font-mono text-accent-purple uppercase tracking-widest leading-none mb-1 font-bold">{getGreeting()}</span>
-                <span className="text-sm font-bold text-white tracking-tight uppercase italic">{getUserDisplayName()}</span>
+                <span className="text-[9px] font-mono text-[#7C3AED] uppercase tracking-widest leading-none mb-1 font-bold">{getGreeting()}</span>
+                <span className="text-sm font-bold text-white tracking-tight">{getUserDisplayName()}</span>
               </div>
               <UserButton 
                 appearance={{
                   elements: {
-                    userButtonAvatarBox: "w-10 h-10 rounded-xl border border-white/10"
+                    userButtonAvatarBox: "w-9 h-9 rounded-xl border border-white/10 shadow-[0_0_10px_rgba(124,58,237,0.2)]"
                   }
                 }}
               />
@@ -99,7 +102,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
 
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="px-8 py-2.5 rounded-full bg-accent-purple text-white font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all border border-white/10">
+                <button className="px-6 py-2 rounded-full bg-[#7C3AED] text-white font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] transition-all border border-white/10 hover:scale-[1.03] active:scale-[0.97]">
                   Sign In
                 </button>
               </SignInButton>
@@ -107,6 +110,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
