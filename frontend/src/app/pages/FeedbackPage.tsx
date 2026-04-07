@@ -189,45 +189,51 @@ export function FeedbackPage() {
             className="mb-12"
           >
             <GlassCard
-              className="p-10 flex flex-col md:flex-row items-center justify-between border-accent-purple/30 bg-white/5 relative overflow-hidden"
+              className={`p-10 flex flex-col md:flex-row items-center justify-between bg-white/5 relative overflow-hidden border ${
+                overallScore >= 80 ? 'border-accent-green/30' : overallScore >= 60 ? 'border-accent-amber/30' : 'border-accent-red/30'
+              }`}
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <VerdictIcon className="w-32 h-32" />
+              <div className="absolute -top-20 -right-10 opacity-[0.03] pointer-events-none">
+                <VerdictIcon className="w-96 h-96" />
               </div>
               
-              <div className="flex items-center gap-8 relative z-10">
+              <div className="flex flex-col md:flex-row items-center gap-10 relative z-10 w-full md:w-auto text-center md:text-left">
                 <div className="relative">
                   <ScoreRing score={overallScore} size={160} strokeWidth={12} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-display font-black">{overallScore}</span>
-                    <span className="text-[10px] font-mono text-text-muted uppercase">N-Index</span>
+                    <span className="text-5xl font-bold font-sans tracking-tight mb-1">{overallScore}</span>
+                    <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">N-Index</span>
                   </div>
                 </div>
                 
                 <div>
-                  <span className="text-[10px] font-mono text-accent-purple uppercase tracking-[0.4em] mb-2 block">Synthetic Verdict</span>
-                  <h2 className={`text-5xl font-display font-black tracking-tighter italic mb-4 text-${verdictColor}`}>
+                  <span className="text-[10px] font-mono text-accent-purple uppercase tracking-[0.4em] mb-3 block">Synthetic Verdict</span>
+                  <h2 className={`text-4xl md:text-6xl font-bold tracking-tight mb-4 ${
+                    overallScore >= 80 ? 'text-accent-green' : overallScore >= 60 ? 'text-accent-amber' : 'text-accent-red'
+                  }`}>
                     {verdict}
                   </h2>
-                  <div className="flex gap-4">
-                     <span className="flex items-center gap-2 text-xs font-mono text-text-muted">
-                        <div className={`w-2 h-2 rounded-full bg-${verdictColor}`} />
+                  <div className="flex items-center justify-center md:justify-start gap-4">
+                     <span className="flex items-center gap-2 text-xs font-mono text-text-muted uppercase tracking-widest">
+                        <div className={`w-2 h-2 rounded-full animate-pulse ${
+                          overallScore >= 80 ? 'bg-accent-green' : overallScore >= 60 ? 'bg-accent-amber' : 'bg-accent-red'
+                        }`} />
                         Status Verified
                      </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 mt-8 md:mt-0 relative z-10">
+              <div className="flex flex-col gap-3 mt-10 md:mt-0 relative z-10 w-full md:w-auto min-w-[200px]">
                 <Link
                   to="/setup"
-                  className="px-8 py-4 rounded-full bg-accent-purple text-white hover:bg-accent-purple/90 transition-all font-bold uppercase text-xs tracking-widest shadow-[0_0_20px_#7c3aed44]"
+                  className="w-full text-center px-8 py-3.5 rounded-xl bg-accent-purple text-white hover:bg-accent-purple/80 transition-all font-bold uppercase text-xs tracking-widest shadow-[0_0_20px_#7c3aed33]"
                 >
                   Initiate Retry
                 </Link>
                 <Link
                   to="/dashboard"
-                  className="px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold uppercase text-xs tracking-widest"
+                  className="w-full text-center px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold uppercase text-xs tracking-widest"
                 >
                   Terminal Home
                 </Link>
