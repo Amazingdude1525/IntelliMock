@@ -5,13 +5,14 @@ import { Navbar } from "../components/Navbar";
 import { GridOverlay } from "../components/GridOverlay";
 import { GlassCard } from "../components/GlassCard";
 import { motion, AnimatePresence } from "motion/react";
-import { Mic, MicOff, MessageSquare, Camera, CameraOff, Loader2, Volume2, Radio } from "lucide-react";
+import { Mic, MicOff, MessageSquare, Camera, CameraOff, Loader2, Volume2, Radio, Terminal } from "lucide-react";
 import { toast } from "sonner";
 import { getSession, startInterview, endInterview, setAuthToken } from "../../lib/api";
 import { useGroqStream } from "../../hooks/useGroqStream";
 import { useConfidence } from "../../hooks/useConfidence";
 import { useVoice } from "../../hooks/useVoice";
 import { RECRUITERS } from "../components/RecruiterAvatars";
+import { CodeTerminal } from "../components/CodeTerminal";
 import type { Session, Message } from "../../types";
 
 type Phase = 'lobby' | 'intro' | 'active';
@@ -31,6 +32,7 @@ export function InterviewVoicePage() {
   const [activeSpeaker, setActiveSpeaker] = useState<number>(0);
   const [introText, setIntroText] = useState("");
   const [micTestLevel, setMicTestLevel] = useState(0);
+  const [showCodeTerminal, setShowCodeTerminal] = useState(false);
 
   const { streamedText, isStreaming, isComplete, startStream, error: groqError } = useGroqStream();
   const { metrics, startTracking, stopTracking, videoRef } = useConfidence();
@@ -470,6 +472,13 @@ export function InterviewVoicePage() {
                   Switch to Chat
                 </button>
                 <button
+                  onClick={() => setShowCodeTerminal(true)}
+                  className="w-full py-3 rounded-xl bg-[#22C55E]/10 hover:bg-[#22C55E]/20 transition-all text-[10px] font-bold uppercase tracking-widest border border-[#22C55E]/20 text-[#22C55E] flex items-center justify-center gap-2"
+                >
+                  <Terminal className="w-4 h-4" />
+                  Code Challenge
+                </button>
+                <button
                   onClick={handleEnd}
                   className="w-full py-3 rounded-xl bg-[#F43F5E]/10 hover:bg-[#F43F5E]/20 transition-all text-[10px] font-bold uppercase tracking-widest border border-[#F43F5E]/20 text-[#F43F5E]"
                 >
@@ -480,6 +489,9 @@ export function InterviewVoicePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Code Terminal Modal */}
+      <CodeTerminal isOpen={showCodeTerminal} onClose={() => setShowCodeTerminal(false)} />
     </div>
   );
 }

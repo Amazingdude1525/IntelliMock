@@ -5,12 +5,13 @@ import { Navbar } from "../components/Navbar";
 import { GridOverlay } from "../components/GridOverlay";
 import { GlassCard } from "../components/GlassCard";
 import { motion, AnimatePresence } from "motion/react";
-import { Send, Lightbulb, Mic, Video, X, Loader2 } from "lucide-react";
+import { Send, Lightbulb, Mic, Video, X, Loader2, Terminal } from "lucide-react";
 import { toast } from "sonner";
 import { getSession, startInterview, endInterview, setAuthToken } from "../../lib/api";
 import { useGroqStream } from "../../hooks/useGroqStream";
 import { useConfidence } from "../../hooks/useConfidence";
 import { RECRUITERS } from "../components/RecruiterAvatars";
+import { CodeTerminal } from "../components/CodeTerminal";
 import type { Session, Message } from "../../types";
 
 const PANEL = [RECRUITERS[0], RECRUITERS[1], RECRUITERS[3]]; // Priya, James, Aisha
@@ -25,6 +26,7 @@ export function InterviewChatPage() {
   const [input, setInput] = useState("");
   const [isInitializing, setIsInitializing] = useState(true);
   const [activeSpeaker, setActiveSpeaker] = useState(1);
+  const [showCodeTerminal, setShowCodeTerminal] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -320,21 +322,33 @@ export function InterviewChatPage() {
               </button>
             </GlassCard>
 
-            <div className="flex items-center justify-between mt-3 px-1">
-              <span className="text-[9px] font-mono text-gray-600 uppercase tracking-widest">
-                {input.length > 0 ? `${input.split(/\s+/).filter(Boolean).length} words` : 'Ready'}
-              </span>
-              <button
-                onClick={() => navigate(`/interview/${id}/voice`)}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED]/20 transition-colors text-[10px] font-bold uppercase tracking-widest"
-              >
-                <Mic className="w-3 h-3" />
-                Voice Mode
-              </button>
-            </div>
+              <div className="flex items-center justify-between mt-3 px-1">
+                <div className="flex items-center gap-3">
+                  <span className="text-[9px] font-mono text-gray-600 uppercase tracking-widest">
+                    {input.length > 0 ? `${input.split(/\s+/).filter(Boolean).length} words` : 'Ready'}
+                  </span>
+                  <button
+                    onClick={() => setShowCodeTerminal(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22C55E]/10 text-[#22C55E] hover:bg-[#22C55E]/20 transition-colors text-[10px] font-bold uppercase tracking-widest"
+                  >
+                    <Terminal className="w-3 h-3" />
+                    Code
+                  </button>
+                </div>
+                <button
+                  onClick={() => navigate(`/interview/${id}/voice`)}
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED]/20 transition-colors text-[10px] font-bold uppercase tracking-widest"
+                >
+                  <Mic className="w-3 h-3" />
+                  Voice Mode
+                </button>
+              </div>
           </div>
         </div>
       </div>
+
+      {/* Code Terminal Modal */}
+      <CodeTerminal isOpen={showCodeTerminal} onClose={() => setShowCodeTerminal(false)} />
     </div>
   );
 }
