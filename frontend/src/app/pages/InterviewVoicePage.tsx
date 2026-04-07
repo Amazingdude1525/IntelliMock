@@ -154,133 +154,188 @@ export function InterviewVoicePage() {
                                   : (messages.filter(m => m.role === 'assistant').slice(-1)[0]?.content || "Please begin...");
 
   return (
-    <div className="h-screen bg-black text-white relative overflow-hidden flex items-center justify-center">
-      <div className="fixed inset-0 z-0 opacity-30">
+    <div className="h-screen bg-black text-white relative overflow-hidden flex flex-col">
+      <div className="fixed inset-0 z-0 opacity-20">
         <SplineScene scene="https://prod.spline.design/KChzoSKgLSxtlaux/scene.splinecode" />
       </div>
       <GridOverlay />
+      
+      {/* Fixed Navbar Integration */}
+      <div className="fixed top-0 left-0 right-0 z-[100]">
+        <Navbar transparent />
+      </div>
 
-      <button
-        onClick={handleEnd}
-        className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all flex items-center justify-center border border-white/10"
-      >
-        <X className="w-5 h-5" />
-      </button>
-
-      {/* Hidden local camera video feed used for metrics but kept offscreen to retain UX */}
-      <video ref={videoRef} muted playsInline className="absolute top-0 left-0 w-1 h-1 opacity-0 pointer-events-none" />
-
-      <div className="relative z-10 max-w-5xl w-full px-6 flex flex-col items-center">
-        {/* Question Counter */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/20">
-            <span className="text-[10px] font-mono text-accent-purple uppercase tracking-[0.3em]">Neural Link Status: Active</span>
-            <div className="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse" />
-          </div>
-        </motion.div>
-
-        {/* Current Question */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentAssistantSpeech}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="text-center mb-12 h-24 flex items-center justify-center"
-          >
-            <h1 className="text-2xl md:text-3xl font-display font-light leading-snug max-w-4xl mx-auto italic tracking-tight text-white/90 font-display">
-               "{currentAssistantSpeech}"
-            </h1>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* 3D Interviewer Panel */}
-        <div className="w-full mb-12">
-          <InterviewerPanel isStreaming={isStreaming || isSpeaking} />
-        </div>
-
-        {/* Trigger Button - Moved BELOW the assistant for better visibility */}
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleToggleRecording}
-            className="w-20 h-20 rounded-full shadow-[0_0_40px_rgba(124,58,237,0.3)] flex items-center justify-center transition-all border border-white/10 backdrop-blur-2xl relative"
-            style={{
-              backgroundColor: isListening
-                ? "rgba(220, 38, 38, 0.9)"
-                : isSpeaking || isStreaming
-                ? "rgba(124, 58, 237, 0.9)"
-                : "rgba(30, 41, 59, 0.8)",
-            }}
-          >
-            {isListening ? (
-              <Mic className="w-8 h-8 text-white animate-pulse" />
-            ) : isSpeaking || isStreaming ? (
-              <div className="flex gap-1 items-center">
-                <span className="w-1.5 h-4 bg-white rounded-full animate-[bounce_1s_infinite_0s]" />
-                <span className="w-1.5 h-8 bg-white rounded-full animate-[bounce_1s_infinite_0.1s]" />
-                <span className="w-1.5 h-4 bg-white rounded-full animate-[bounce_1s_infinite_0.2s]" />
-              </div>
-            ) : (
-              <div className="relative">
-                <Mic className="w-8 h-8 text-white" />
-                <div className="absolute -inset-4 bg-accent-purple/20 blur-xl rounded-full -z-10 animate-pulse" />
-              </div>
-            )}
-          </motion.button>
-          <p className="text-xs font-mono text-text-muted uppercase tracking-[0.2em] animate-pulse">
-            {isListening ? "Listening..." : isSpeaking ? "AI Speaking" : "Click to Speak"}
-          </p>
-        </div>
-
-        {/* Live Transcript / Error Banner */}
-        <AnimatePresence>
-          {(isListening || transcript || voiceError || groqError) && (
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-24 pb-12 px-6">
+        <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          {/* Left Column: Biometrics & Meta */}
+          <div className="lg:col-span-3 flex flex-col gap-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="mt-8 mb-8 w-full z-20"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-6"
             >
-              <GlassCard className={`p-6 max-w-2xl mx-auto w-full ${voiceError || groqError ? 'border-accent-red' : ''}`}>
-                <p className="text-sm text-text-muted mb-2">{voiceError || groqError ? "Error:" : "You said:"}</p>
-                <p className="text-base leading-relaxed tracking-wide">{voiceError || groqError || transcript || "..."}</p>
+              {/* Camera Preview */}
+              <GlassCard className="aspect-video overflow-hidden relative group border-accent-purple/20">
+                <video 
+                  ref={videoRef} 
+                  autoPlay 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-700" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-accent-red animate-pulse" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">Neural Link: Stream</span>
+                </div>
+              </GlassCard>
+
+              {/* Confidence Metrics */}
+              <GlassCard className="p-5 space-y-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-accent-purple font-bold">Biometrics</span>
+                  <span className="text-xs font-bold text-white italic">{metrics.overall}%</span>
+                </div>
+                {[
+                  { label: "Posture", val: metrics.posture, color: "bg-accent-blue" },
+                  { label: "Focus", val: metrics.focus, color: "bg-accent-purple" },
+                  { label: "Calmness", val: metrics.calmness, color: "bg-accent-green" },
+                ].map(m => (
+                  <div key={m.label} className="space-y-1.5">
+                    <div className="flex justify-between text-[8px] font-mono uppercase tracking-widest text-text-muted">
+                      <span>{m.label}</span>
+                      <span>{m.val}%</span>
+                    </div>
+                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${m.val}%` }}
+                        className={`h-full ${m.color} shadow-[0_0_8px_rgba(255,255,255,0.2)]`}
+                      />
+                    </div>
+                  </div>
+                ))}
               </GlassCard>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
 
-        {/* Status Text */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12 h-12">
-          <p className="text-lg font-medium text-text-muted transition-colors">
-            {isStreaming ? (
-                <span className="text-accent-purple flex justify-center items-center gap-2 font-mono text-sm uppercase tracking-widest"><Loader2 className="w-4 h-4 animate-spin"/> Processing Neural Input...</span>
-            ) : isSpeaking ? (
-              <span className="text-accent-purple font-mono text-sm uppercase tracking-widest">Assistant Transmitting...</span>
-            ) : isListening ? (
-              <span className="text-accent-red animate-pulse font-mono text-sm uppercase tracking-widest">Input Stream Active</span>
-            ) : (
-              <span className="font-mono text-xs uppercase tracking-[0.3em] opacity-40 italic">Standby for Voice Command</span>
-            )}
-          </p>
-        </motion.div>
+          {/* Center Column: AI Interaction */}
+          <div className="lg:col-span-6 flex flex-col items-center">
+            {/* Neural Status */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mb-8"
+            >
+              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-3xl">
+                <div className="relative w-2 h-2">
+                   <div className="absolute inset-0 bg-accent-purple rounded-full animate-ping opacity-75" />
+                   <div className="relative w-2 h-2 bg-accent-purple rounded-full" />
+                </div>
+                <span className="text-[10px] font-mono text-white uppercase tracking-[0.4em] font-bold">Transmission Phase: {questionNumber}/7</span>
+              </div>
+            </motion.div>
 
-        {/* Control Buttons */}
-        <div className="flex items-center justify-center gap-4">
-          <button
+            {/* 3D Interviewers */}
+            <div className="w-full aspect-video flex items-center justify-center mb-10 overflow-visible">
+              <InterviewerPanel isStreaming={isStreaming || isSpeaking} />
+            </div>
+
+            {/* Current Speech Display */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentAssistantSpeech}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="text-center mb-10 min-h-[80px]"
+              >
+                <h1 className="text-xl md:text-2xl font-display font-light leading-relaxed max-w-2xl mx-auto italic text-white/80">
+                   "{currentAssistantSpeech}"
+                </h1>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Interaction Trigger */}
+            <div className="flex flex-col items-center gap-6">
+              <div className="relative">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleToggleRecording}
+                  className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-500 border-4 ${
+                    isListening ? "border-accent-red shadow-[0_0_50px_rgba(220,38,38,0.4)]" : "border-white/5 shadow-[0_0_30px_rgba(124,58,237,0.2)]"
+                  } backdrop-blur-3xl`}
+                  style={{
+                    backgroundColor: isListening ? "rgba(220, 38, 38, 0.15)" : "rgba(124, 58, 237, 0.15)"
+                  }}
+                >
+                  {isListening ? (
+                    <Mic className="w-10 h-10 text-accent-red animate-pulse" />
+                  ) : isSpeaking || isStreaming ? (
+                    <div className="flex gap-1.5 h-8 items-end">
+                      <motion.div animate={{ height: [8, 24, 8] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-1.5 bg-accent-purple rounded-full" />
+                      <motion.div animate={{ height: [12, 32, 12] }} transition={{ repeat: Infinity, duration: 0.6 }} className="w-1.5 bg-accent-purple rounded-full" />
+                      <motion.div animate={{ height: [8, 20, 8] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 bg-accent-purple rounded-full" />
+                    </div>
+                  ) : (
+                    <Mic className="w-10 h-10 text-white group-hover:text-accent-purple transition-colors" />
+                  )}
+                </motion.button>
+                {/* Orbital Loader during AI processing */}
+                {isStreaming && (
+                  <div className="absolute -inset-2 border-2 border-accent-purple border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
+              <p className="text-[10px] font-mono text-text-muted uppercase tracking-[0.3em] font-bold">
+                {isListening ? "Neural Input Active" : isSpeaking ? "Synthesizing Speech" : "Click to Speak"}
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Dynamic Transcript */}
+          <div className="lg:col-span-3 h-full">
+             <AnimatePresence>
+               {(transcript || voiceError || groqError) && (
+                 <motion.div
+                   initial={{ opacity: 0, scale: 0.95 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   exit={{ opacity: 0 }}
+                 >
+                   <GlassCard className={`p-6 border-l-2 ${voiceError || groqError ? 'border-accent-red' : 'border-accent-green'}`}>
+                     <div className="flex items-center gap-2 mb-4">
+                       <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Live Stream</span>
+                     </div>
+                     <p className="text-sm leading-relaxed text-white/70 italic">
+                        {voiceError || groqError || transcript || "..."}
+                     </p>
+                   </GlassCard>
+                 </motion.div>
+               )}
+             </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Global Controls */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6">
+           <button
             onClick={() => navigate(`/interview/${id}/chat`)}
-            className="px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest border border-white/10"
+            className="px-10 py-3 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 group"
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="w-4 h-4 text-accent-blue" />
             Switch to Chat
+          </button>
+          <button
+            onClick={handleEnd}
+            className="px-10 py-3 rounded-full bg-accent-red/10 hover:bg-accent-red/20 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-accent-red/20 text-accent-red"
+          >
+            Abort Session
           </button>
         </div>
       </div>
     </div>
+  );
+}
   );
 }
