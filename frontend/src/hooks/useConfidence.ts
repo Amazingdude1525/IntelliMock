@@ -268,5 +268,13 @@ export function useConfidence(): UseConfidenceReturn {
     return () => stopTracking();
   }, [stopTracking]);
 
+  // Sync the active stream to the video element if it gets swapped/remounted
+  useEffect(() => {
+    if (videoRef.current && streamRef.current && videoRef.current.srcObject !== streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      videoRef.current.play().catch(() => {});
+    }
+  });
+
   return { metrics, isActive, videoRef, startTracking, stopTracking, error };
 }
