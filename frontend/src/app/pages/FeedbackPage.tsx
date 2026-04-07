@@ -205,7 +205,7 @@ export function FeedbackPage() {
               
               <div className="flex flex-col md:flex-row items-center gap-10 relative z-10 w-full md:w-auto text-center md:text-left">
                 <div className="relative">
-                  <ScoreRing score={overallScore} size={160} strokeWidth={12} />
+                  <ScoreRing score={overallScore} size={160} strokeWidth={12} showScoreText={false} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-5xl font-bold font-sans tracking-tight mb-1">{overallScore}</span>
                     <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">N-Index</span>

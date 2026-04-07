@@ -6,6 +6,7 @@ interface ScoreRingProps {
   strokeWidth?: number;
   label?: string;
   animate?: boolean;
+  showScoreText?: boolean;
 }
 
 export function ScoreRing({
@@ -14,6 +15,7 @@ export function ScoreRing({
   strokeWidth = 8,
   label = "",
   animate = true,
+  showScoreText = true,
 }: ScoreRingProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -70,16 +72,18 @@ export function ScoreRing({
         />
         
         {/* Score text */}
-        <text
-          x="50%"
-          y="50%"
-          textAnchor="middle"
-          dy="0.3em"
-          className="text-3xl font-display font-bold fill-text-primary transform rotate-90"
-          style={{ transformOrigin: "center" }}
-        >
-          {score}
-        </text>
+        {showScoreText && (
+          <text
+            x="50%"
+            y="50%"
+            textAnchor="middle"
+            dy="0.3em"
+            className="text-3xl font-display font-bold fill-text-primary transform rotate-90"
+            style={{ transformOrigin: "center" }}
+          >
+            {score}
+          </text>
+        )}
       </svg>
       
       {label && (
