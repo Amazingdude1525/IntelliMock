@@ -8,7 +8,7 @@ interface NavbarProps {
 
 export function Navbar({ transparent = false }: NavbarProps) {
   const location = useLocation();
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const isLanding = location.pathname === "/";
 
   const getGreeting = () => {
@@ -36,7 +36,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative w-9 h-9 rounded-xl bg-accent-purple flex items-center justify-center overflow-hidden">
+            <div className="relative w-9 h-9 rounded-xl bg-accent-purple flex items-center justify-center overflow-hidden border border-white/10">
                <Zap className="w-5 h-5 text-white relative z-10" />
                <div className="absolute inset-0 bg-gradient-to-tr from-accent-blue/40 to-transparent animate-pulse" />
             </div>
@@ -48,7 +48,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
             </div>
           </Link>
 
-          {/* Center Links - Only show if not on landing, or if signed in on landing */}
+          {/* Center Links */}
           <div className="hidden md:flex items-center gap-10">
             {(!isLanding || user) && (
               <>
@@ -108,7 +108,5 @@ export function Navbar({ transparent = false }: NavbarProps) {
         </div>
       </div>
     </nav>
-  );
-}
   );
 }
