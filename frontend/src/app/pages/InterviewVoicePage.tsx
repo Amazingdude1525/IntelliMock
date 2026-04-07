@@ -30,6 +30,9 @@ export function InterviewVoicePage() {
     isListening, transcript, startListening, stopListening, 
     isSpeaking, speak, stopSpeaking, error: voiceError 
   } = useVoice();
+  
+  const [phase, setPhase] = useState<'lobby' | 'intro' | 'active'>('lobby');
+  const [currentSpeaker, setCurrentSpeaker] = useState<'Nexus' | 'Core' | 'Synapse' | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -134,7 +137,35 @@ export function InterviewVoicePage() {
     );
   }
 
-  const questionNumber = Math.max(1, messages.filter(m => m.role === 'user').length + 1);
+  const startSession = async () => {
+    setPhase('intro');
+    // Intro sequence
+    const introLines = [
+      { name: 'Nexus' as const, text: "Technical Architect Nexus online. I'll be assessing your structural thinking and depth." },
+      { name: 'Core' as const, text: "Logic Engine Core synchronized. Prepare for deep investigative inquiries." },
+      { name: 'Synapse' as const, text: "Behavioral Analyst Synapse engaged. I'll be evaluating your cultural and empathetic resonance." }
+    ];
+
+    for (const intro of introLines) {
+      setCurrentSpeaker(intro.name);
+      speak(intro.text);
+      await new Promise(r => setTimeout(r, 4500));
+    }
+
+    setCurrentSpeaker(null);
+    setPhase('active');
+    
+    // Resume the actual interview
+    const chatHistory = messages.filter(m => m.role !== 'system');
+    if (chatHistory.length > 0) {
+      const last = chatHistory[chatHistory.length - 1];
+      if (last.role === 'assistant') {
+        setCurrentSpeaker('Core');
+        speak(last.content);
+      }
+    }
+  };
+
   const currentAssistantSpeech = isStreaming 
                                   ? streamedText.replace('INTELLIMOCK_COMPLETE','') 
                                   : (messages.filter(m => m.role === 'assistant').slice(-1)[0]?.content || "Initializing Transmission...");
