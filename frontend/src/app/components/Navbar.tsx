@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
 import { Zap } from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 interface NavbarProps {
   transparent?: boolean;
@@ -8,7 +8,7 @@ interface NavbarProps {
 
 export function Navbar({ transparent = false }: NavbarProps) {
   const location = useLocation();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const isLanding = location.pathname === "/";
 
   const getGreeting = () => {
@@ -28,7 +28,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all border-b border-white/5 ${
         transparent
-          ? "bg-transparent"
+          ? "bg-gradient-to-b from-black/80 to-transparent"
           : "backdrop-blur-2xl bg-black/80"
       }`}
     >
@@ -48,65 +48,67 @@ export function Navbar({ transparent = false }: NavbarProps) {
             </div>
           </Link>
 
-          {/* Center Links */}
-          {!isLanding && (
-            <div className="hidden md:flex items-center gap-10">
-              <Link
-                to="/dashboard"
-                className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                  location.pathname === "/dashboard" ? "text-accent-purple" : "text-text-muted"
-                }`}
-              >
-                Dashboard
-                <div className={`absolute -bottom-1 left-0 h-[1px] bg-accent-purple transition-all duration-300 ${location.pathname === "/dashboard" ? "w-full" : "w-0 group-hover:w-full"}`} />
-              </Link>
-              <Link
-                to="/history"
-                className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                  location.pathname === "/history" ? "text-accent-purple" : "text-text-muted"
-                }`}
-              >
-                History
-                <div className={`absolute -bottom-1 left-0 h-[1px] bg-accent-purple transition-all duration-300 ${location.pathname === "/history" ? "w-full" : "w-0 group-hover:w-full"}`} />
-              </Link>
-              <Link
-                to="/creators"
-                className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
-                  location.pathname === "/creators" ? "text-accent-purple" : "text-text-muted"
-                }`}
-              >
-                Creators
-                <div className={`absolute -bottom-1 left-0 h-[1px] bg-accent-purple transition-all duration-300 ${location.pathname === "/creators" ? "w-full" : "w-0 group-hover:w-full"}`} />
-              </Link>
-            </div>
-          )}
+          {/* Center Links - Only show if not on landing, or if signed in on landing */}
+          <div className="hidden md:flex items-center gap-10">
+            {(!isLanding || user) && (
+              <>
+                <Link
+                  to="/dashboard"
+                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
+                    location.pathname === "/dashboard" ? "text-accent-purple" : "text-text-muted"
+                  }`}
+                >
+                  Dashboard
+                  <div className={`absolute -bottom-1 left-0 h-[1px] bg-accent-purple transition-all duration-300 ${location.pathname === "/dashboard" ? "w-full" : "w-0 group-hover:w-full"}`} />
+                </Link>
+                <Link
+                  to="/history"
+                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
+                    location.pathname === "/history" ? "text-accent-purple" : "text-text-muted"
+                  }`}
+                >
+                  History
+                </Link>
+                <Link
+                  to="/creators"
+                  className={`text-[10px] font-mono uppercase tracking-[0.2em] font-bold transition-all hover:text-accent-purple relative group ${
+                    location.pathname === "/creators" ? "text-accent-purple" : "text-text-muted"
+                  }`}
+                >
+                  Creators
+                </Link>
+              </>
+            )}
+          </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-6">
-            {!isLanding && (
-              <div className="hidden lg:flex flex-col items-end">
+            <SignedIn>
+              <div className="hidden lg:flex flex-col items-end mr-2">
                 <span className="text-[10px] font-mono text-accent-purple uppercase tracking-widest leading-none mb-1 font-bold">{getGreeting()}</span>
                 <span className="text-sm font-bold text-white tracking-tight uppercase italic">{getUserDisplayName()}</span>
               </div>
-            )}
-            
-            {isLanding ? (
-              <Link
-                to="/dashboard"
-                className="px-8 py-2.5 rounded-full bg-accent-purple text-white font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all border border-white/10"
-              >
-                Access Platform
-              </Link>
-            ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-purple/40 to-accent-blue/40 p-[1px] group cursor-pointer">
-                <div className="w-full h-full rounded-xl bg-black flex items-center justify-center text-white text-xs font-black border border-white/10 uppercase group-hover:bg-accent-purple/10 transition-colors">
-                  {getUserDisplayName().charAt(0)}
-                </div>
-              </div>
-            )}
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-10 h-10 rounded-xl border border-white/10"
+                  }
+                }}
+              />
+            </SignedIn>
+
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="px-8 py-2.5 rounded-full bg-accent-purple text-white font-bold text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all border border-white/10">
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </div>
     </nav>
+  );
+}
   );
 }
