@@ -8,26 +8,47 @@ const creators = [
   {
     name: "Prateek Das",
     role: "Lead Architect & AI Systems",
-    bio: "Visionary behind the IntelliMock core engine and behavioral biometric systems. Specializing in high-fidelity AI integration.",
-    links: { github: "https://github.com/Amazingdude1525", linkedin: "#", mail: "mailto:prateek@example.com" }
+    bio: "Visionary behind the IntelliMock core engine and behavioral biometric systems. Specializing in high-fidelity AI integration and full-stack development.",
+    initial: "P",
+    color: "#7C3AED",
+    photo: "/team/prateek.jpg",
+    links: {
+      github: "https://github.com/Amazingdude1525",
+      linkedin: "https://www.linkedin.com/in/prateek-das-a45215252/",
+      mail: "mailto:prateek@intellimock.dev"
+    }
   },
   {
     name: "Abhishek Kumar Singh",
     role: "Senior UI/UX & Frontend Lead",
-    bio: "Architect of the premium glassmorphic interface and 3D Spline integration.",
-    links: { github: "https://github.com/AbhishekSingh", linkedin: "#", mail: "mailto:abhishek@example.com" }
+    bio: "Architect of the premium glassmorphic interface and 3D integration. Passionate about creating world-class user experiences.",
+    initial: "A",
+    color: "#06B6D4",
+    photo: "/team/abhishek.jpg",
+    links: {
+      github: "https://github.com/ABHISHEKKUMARSINGH-dev",
+      linkedin: "https://www.linkedin.com/in/abhishek-kumar-singh-67667825a/",
+      mail: "mailto:abhishek.25bce11273@vitbhopal.ac.in"
+    }
   },
   {
     name: "Kishlay Mishra",
     role: "Backend & Cloud Orchestrator",
-    bio: "Mastermind of the high-concurrency Node.js infrastructure and database scaling.",
-    links: { github: "https://github.com/KishlayMishra", linkedin: "#", mail: "mailto:kishlay@example.com" }
+    bio: "Mastermind of the high-concurrency Node.js infrastructure, database scaling, and cloud-native deployment pipelines.",
+    initial: "K",
+    color: "#22C55E",
+    photo: "/team/kishlay.jpg",
+    links: {
+      github: "https://github.com/bekishu999",
+      linkedin: "https://www.linkedin.com/in/kishlaymishra999/",
+      mail: "mailto:kishlay@intellimock.dev"
+    }
   }
 ];
 
 export function CreatorsPage() {
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0f] text-white relative overflow-hidden">
       <GridOverlay />
       <Navbar />
 
@@ -38,15 +59,15 @@ export function CreatorsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-20"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/20 mb-6">
-              <Zap className="w-4 h-4 text-accent-purple" />
-              <span className="text-xs font-mono text-accent-purple uppercase tracking-widest">The Masterminds</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/20 mb-6">
+              <Zap className="w-4 h-4 text-[#7C3AED]" />
+              <span className="text-xs font-mono text-[#7C3AED] uppercase tracking-widest">The Masterminds</span>
             </div>
-            <h1 className="text-6xl md:text-7xl font-display font-black mb-6 tracking-tighter">
-              Team <span className="bg-gradient-to-r from-accent-purple to-accent-blue bg-clip-text text-transparent">Ctrl Alt Elite</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+              Team <span className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">Ctrl Alt Elite</span>
             </h1>
-            <p className="text-xl text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
-              We are a team of passionate creators dedicated to pushing the boundaries of AI-driven career development.
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              We are a team of passionate creators from VIT Bhopal, dedicated to pushing the boundaries of AI-driven career development.
             </p>
           </motion.div>
 
@@ -56,32 +77,44 @@ export function CreatorsPage() {
                 key={creator.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.15 }}
               >
-                <GlassCard className="p-8 h-full flex flex-col text-left group hover:border-accent-purple/50 transition-all duration-500">
+                <GlassCard className="p-8 h-full flex flex-col text-left group hover:border-[#7C3AED]/50 transition-all duration-500">
+                  {/* Photo / Initial */}
                   <div className="mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                      <span className="text-3xl font-display font-bold text-accent-purple">
-                        {creator.name.charAt(0)}
-                      </span>
+                    <div
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500 overflow-hidden"
+                      style={{ background: `linear-gradient(135deg, ${creator.color}20, ${creator.color}05)` }}
+                    >
+                      <img
+                        src={creator.photo}
+                        alt={creator.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to initial if photo not found
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = `<span class="text-3xl font-bold" style="color:${creator.color}">${creator.initial}</span>`;
+                        }}
+                      />
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-display font-bold mb-2 group-hover:text-accent-purple transition-colors">
+                  <h3 className="text-2xl font-bold mb-2 group-hover:text-[#7C3AED] transition-colors">
                     {creator.name}
                   </h3>
-                  <p className="text-accent-blue text-sm font-mono mb-6 uppercase tracking-widest">
+                  <p className="text-sm font-mono mb-6 uppercase tracking-widest" style={{ color: creator.color }}>
                     {creator.role}
                   </p>
-                  <p className="text-text-muted text-sm leading-relaxed mb-10 flex-grow">
+                  <p className="text-gray-400 text-sm leading-relaxed mb-10 flex-grow">
                     {creator.bio}
                   </p>
 
                   <div className="flex items-center gap-4 border-t border-white/5 pt-6">
-                    <a href={creator.links.github} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    <a href={creator.links.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <Github className="w-4 h-4" />
                     </a>
-                    <a href={creator.links.linkedin} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    <a href={creator.links.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <Linkedin className="w-4 h-4" />
                     </a>
                     <a href={creator.links.mail} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
@@ -99,8 +132,8 @@ export function CreatorsPage() {
             transition={{ delay: 0.8 }}
             className="mt-32 text-center"
           >
-            <p className="text-xs font-mono text-text-muted uppercase tracking-[0.5em]">
-              Designed with Precision & Passion
+            <p className="text-xs font-mono text-gray-600 uppercase tracking-[0.5em]">
+              VIT Bhopal University · B.Tech CSE · 2025–2029
             </p>
           </motion.div>
         </div>
