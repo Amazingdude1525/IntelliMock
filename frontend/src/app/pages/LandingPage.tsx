@@ -66,23 +66,26 @@ export function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative h-[500px] lg:h-[600px] w-full"
+            className="relative h-[500px] lg:h-[600px] w-full overflow-hidden translate-x-8 lg:translate-x-20"
           >
-            <SplineScene 
-              scene="https://prod.spline.design/KChzoSKgLSxtlaux/scene.splinecode" 
-              className="scale-110 lg:scale-125 select-none pointer-events-none"
-            />
+            {/* Extended absolute wrapper to push Spline's watermark outside of the visible area */}
+            <div className="absolute -inset-x-[15%] -inset-y-[15%] pointer-events-none">
+              <SplineScene 
+                scene="https://prod.spline.design/KChzoSKgLSxtlaux/scene.splinecode" 
+                className="w-full h-full scale-100 lg:scale-110 select-none"
+              />
+            </div>
             
             {/* Decorative Floating Glows */}
             <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-accent-purple/20 blur-3xl"
+              className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-accent-purple/20 blur-3xl pointer-events-none"
             />
             <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-accent-blue/20 blur-3xl"
+              className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-accent-blue/20 blur-3xl pointer-events-none"
             />
           </motion.div>
         </div>
