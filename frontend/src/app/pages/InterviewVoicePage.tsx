@@ -166,6 +166,7 @@ export function InterviewVoicePage() {
     }
   };
 
+  const questionNumber = Math.max(1, messages.filter(m => m.role === 'user').length + 1);
   const currentAssistantSpeech = isStreaming 
                                   ? streamedText.replace('INTELLIMOCK_COMPLETE','') 
                                   : (messages.filter(m => m.role === 'assistant').slice(-1)[0]?.content || "Initializing Transmission...");
