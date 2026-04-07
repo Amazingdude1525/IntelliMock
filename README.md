@@ -1,7 +1,5 @@
 # 🌌 IntelliMock: Elite AI Interview Platform
 
-![IntelliMock Banner](https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=2070)
-
 > **Elevate your career readiness with real-time biometric feedback and industry-standard AI intelligence.**
 
 IntelliMock is a high-fidelity recruitment preparation platform that simulates real-world interview environments. Featuring **Elite Mode**, it provides an immersive 3D-integrated experience with precise behavioral analytics.
