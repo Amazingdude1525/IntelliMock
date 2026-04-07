@@ -68,7 +68,13 @@ export function InterviewVoicePage() {
       }
     }
     load();
-  }, [id, getToken, navigate]);
+    
+    // Start camera immediately for the Pre-Interview check
+    startTracking();
+    
+    // Cleanup on unmount
+    return () => stopTracking();
+  }, [id, getToken, navigate, startTracking, stopTracking]);
 
   // ─── Stream → message sync ───
   const prevStreaming = useRef(false);
@@ -117,7 +123,6 @@ export function InterviewVoicePage() {
 
   // ─── Start intro sequence ───
   const handleEnterRoom = async () => {
-    startTracking();
     setPhase('intro');
 
     const intros = [
