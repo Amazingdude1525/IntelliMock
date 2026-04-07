@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useAuth } from "@clerk/clerk-react";
+import { Navbar } from "../components/Navbar";
 import { GridOverlay } from "../components/GridOverlay";
 import { GlassCard } from "../components/GlassCard";
 import { motion, AnimatePresence } from "motion/react";
-import { Mic, MicOff, MessageSquare, X, Loader2, Video } from "lucide-react";
+import { Mic, MessageSquare, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getSession, startInterview, endInterview, setAuthToken } from "../../lib/api";
 import { useGroqStream } from "../../hooks/useGroqStream";
@@ -24,10 +25,10 @@ export function InterviewVoicePage() {
   const [isInitializing, setIsInitializing] = useState(true);
 
   const { streamedText, isStreaming, isComplete, startStream, error: groqError } = useGroqStream();
-  const { metrics, startTracking, stopTracking, videoRef, error: confidenceError } = useConfidence();
+  const { metrics, startTracking, stopTracking, videoRef } = useConfidence();
   const { 
     isListening, transcript, startListening, stopListening, 
-    isSpeaking, speak, stopSpeaking, isSupported, error: voiceError 
+    isSpeaking, speak, stopSpeaking, error: voiceError 
   } = useVoice();
 
   useEffect(() => {
@@ -48,7 +49,6 @@ export function InterviewVoicePage() {
             ...((data as any).messages || []),
             { id: 'initial', session_id: id, role: 'assistant', content: firstQ, created_at: new Date().toISOString() }
           ]);
-          // Wait briefly, then speak the first question!
           setTimeout(() => speak(firstQ), 1000);
         } else {
            const lastMsg = chatHistory[chatHistory.length - 1];
@@ -71,7 +71,6 @@ export function InterviewVoicePage() {
     };
   }, [id, getToken, navigate, startTracking, stopTracking, speak, stopSpeaking, stopListening]);
 
-  // Handle Groq completion -> automatically read the output loudly
   const prevStreaming = useRef(false);
   useEffect(() => {
     if (prevStreaming.current && !isStreaming && streamedText) {
@@ -88,7 +87,6 @@ export function InterviewVoicePage() {
     prevStreaming.current = isStreaming;
   }, [isStreaming, streamedText, id, speak]);
 
-  // Submit Answer -> Hook onto transcription stop (whether manual or auto 2s silence)
   const prevListening = useRef(false);
   useEffect(() => {
     if (prevListening.current && !isListening && transcript.trim() && id && !isStreaming) {
@@ -99,7 +97,7 @@ export function InterviewVoicePage() {
        startStream(id, userMsg, metrics);
     }
     prevListening.current = isListening;
-  }, [isListening, transcript, id, startStream, isStreaming]);
+  }, [isListening, transcript, id, startStream, isStreaming, metrics]);
 
   useEffect(() => {
     if (isComplete) {
@@ -127,23 +125,11 @@ export function InterviewVoicePage() {
     }
   };
 
-  const getWaveformColor = () => {
-    if (isSpeaking) return "var(--accent-purple)";
-    if (isListening) return "var(--accent-green)";
-    return "var(--text-muted)";
-  };
-
-  const getConfidenceColor = () => {
-    if (metrics.overall >= 80) return "var(--accent-green)";
-    if (metrics.overall >= 60) return "var(--accent-amber)";
-    return "var(--accent-red)";
-  };
-
   if (isInitializing || !session) {
     return (
-      <div className="h-screen bg-background flex flex-col items-center justify-center">
+      <div className="h-screen bg-black flex flex-col items-center justify-center">
         <Loader2 className="w-12 h-12 text-accent-purple animate-spin mb-4" />
-        <p className="text-text-muted font-mono animate-pulse">Initializing Voice Capabilities...</p>
+        <p className="text-text-muted font-mono animate-pulse">Initializing Neural Voice Systems...</p>
       </div>
     );
   }
@@ -151,7 +137,7 @@ export function InterviewVoicePage() {
   const questionNumber = Math.max(1, messages.filter(m => m.role === 'user').length + 1);
   const currentAssistantSpeech = isStreaming 
                                   ? streamedText.replace('INTELLIMOCK_COMPLETE','') 
-                                  : (messages.filter(m => m.role === 'assistant').slice(-1)[0]?.content || "Please begin...");
+                                  : (messages.filter(m => m.role === 'assistant').slice(-1)[0]?.content || "Initializing Transmission...");
 
   return (
     <div className="h-screen bg-black text-white relative overflow-hidden flex flex-col">
@@ -187,7 +173,7 @@ export function InterviewVoicePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-3 left-3 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-accent-red animate-pulse" />
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">Neural Link: Stream</span>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">Neural Stream: Active</span>
                 </div>
               </GlassCard>
 
@@ -200,7 +186,7 @@ export function InterviewVoicePage() {
                 {[
                   { label: "Posture", val: metrics.posture, color: "bg-accent-blue" },
                   { label: "Focus", val: metrics.focus, color: "bg-accent-purple" },
-                  { label: "Calmness", val: metrics.calmness, color: "bg-accent-green" },
+                  { label: "Calmness", val: metrics.calm, color: "bg-accent-green" },
                 ].map(m => (
                   <div key={m.label} className="space-y-1.5">
                     <div className="flex justify-between text-[8px] font-mono uppercase tracking-widest text-text-muted">
@@ -228,17 +214,17 @@ export function InterviewVoicePage() {
               animate={{ opacity: 1, scale: 1 }}
               className="mb-8"
             >
-              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-3xl">
+              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
                 <div className="relative w-2 h-2">
                    <div className="absolute inset-0 bg-accent-purple rounded-full animate-ping opacity-75" />
                    <div className="relative w-2 h-2 bg-accent-purple rounded-full" />
                 </div>
-                <span className="text-[10px] font-mono text-white uppercase tracking-[0.4em] font-bold">Transmission Phase: {questionNumber}/7</span>
+                <span className="text-[10px] font-mono text-white uppercase tracking-[0.4em] font-bold">Session Phase: {questionNumber}/7</span>
               </div>
             </motion.div>
 
             {/* 3D Interviewers */}
-            <div className="w-full aspect-video flex items-center justify-center mb-10 overflow-visible">
+            <div className="w-full aspect-video flex items-center justify-center mb-10">
               <InterviewerPanel isStreaming={isStreaming || isSpeaking} />
             </div>
 
@@ -264,11 +250,11 @@ export function InterviewVoicePage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleToggleRecording}
-                  className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-500 border-4 ${
-                    isListening ? "border-accent-red shadow-[0_0_50px_rgba(220,38,38,0.4)]" : "border-white/5 shadow-[0_0_30px_rgba(124,58,237,0.2)]"
+                  className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-500 border-2 ${
+                    isListening ? "border-accent-red shadow-[0_0_50px_rgba(220,38,38,0.4)]" : "border-white/10 shadow-[0_0_30px_rgba(124,58,237,0.2)]"
                   } backdrop-blur-3xl`}
                   style={{
-                    backgroundColor: isListening ? "rgba(220, 38, 38, 0.15)" : "rgba(124, 58, 237, 0.15)"
+                    backgroundColor: isListening ? "rgba(220, 38, 38, 0.2)" : "rgba(124, 58, 237, 0.2)"
                   }}
                 >
                   {isListening ? (
@@ -280,21 +266,20 @@ export function InterviewVoicePage() {
                       <motion.div animate={{ height: [8, 20, 8] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 bg-accent-purple rounded-full" />
                     </div>
                   ) : (
-                    <Mic className="w-10 h-10 text-white group-hover:text-accent-purple transition-colors" />
+                    <Mic className="w-10 h-10 text-white" />
                   )}
                 </motion.button>
-                {/* Orbital Loader during AI processing */}
                 {isStreaming && (
                   <div className="absolute -inset-2 border-2 border-accent-purple border-t-transparent rounded-full animate-spin" />
                 )}
               </div>
               <p className="text-[10px] font-mono text-text-muted uppercase tracking-[0.3em] font-bold">
-                {isListening ? "Neural Input Active" : isSpeaking ? "Synthesizing Speech" : "Click to Speak"}
+                {isListening ? "Neural Input Active" : isSpeaking ? "Transmitting Speech" : "Sync Voice Command"}
               </p>
             </div>
           </div>
 
-          {/* Right Column: Dynamic Transcript */}
+          {/* Right Column: Live Data Feed */}
           <div className="lg:col-span-3 h-full">
              <AnimatePresence>
                {(transcript || voiceError || groqError) && (
@@ -305,7 +290,7 @@ export function InterviewVoicePage() {
                  >
                    <GlassCard className={`p-6 border-l-2 ${voiceError || groqError ? 'border-accent-red' : 'border-accent-green'}`}>
                      <div className="flex items-center gap-2 mb-4">
-                       <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Live Stream</span>
+                       <span className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Neural Transcript</span>
                      </div>
                      <p className="text-sm leading-relaxed text-white/70 italic">
                         {voiceError || groqError || transcript || "..."}
@@ -335,7 +320,5 @@ export function InterviewVoicePage() {
         </div>
       </div>
     </div>
-  );
-}
   );
 }
