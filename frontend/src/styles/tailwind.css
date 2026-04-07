@@ -86,3 +86,22 @@
 ::-webkit-scrollbar-track { background: var(--surface); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Hide Spline Watermarks */
+canvas + a,
+canvas ~ a,
+[class*="spline"] a,
+#spline-watermark,
+.spline-watermark,
+div[style*="position: absolute; bottom: 16px; right: 16px;"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Ensure Spline containers don't show overflow artifacts */
+.spline-container {
+  overflow: hidden !important;
+  position: relative;
+}

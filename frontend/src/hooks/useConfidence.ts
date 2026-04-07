@@ -64,7 +64,11 @@ export function useConfidence(): UseConfidenceReturn {
         videoRef.current.srcObject = stream;
         videoRef.current.muted = true;
         videoRef.current.playsInline = true;
-        await videoRef.current.play();
+        try {
+          await videoRef.current.play();
+        } catch (e) {
+          console.warn("Autoplay prevented:", e);
+        }
       }
 
       setIsActive(true);

@@ -151,7 +151,7 @@ export function InterviewVoicePage() {
         <Navbar transparent />
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-24 pb-12 px-6">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-16 pb-8 px-6">
         <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left Column: Biometrics & Meta */}
@@ -207,7 +207,7 @@ export function InterviewVoicePage() {
           </div>
 
           {/* Center Column: AI Interaction */}
-          <div className="lg:col-span-6 flex flex-col items-center">
+          <div className="lg:col-span-6 flex flex-col items-center -mt-8">
             {/* Neural Status */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -224,7 +224,7 @@ export function InterviewVoicePage() {
             </motion.div>
 
             {/* 3D Interviewers */}
-            <div className="w-full aspect-video flex items-center justify-center mb-10">
+            <div className="w-full aspect-video flex items-center justify-center mb-6">
               <InterviewerPanel isStreaming={isStreaming || isSpeaking} />
             </div>
 
@@ -235,9 +235,9 @@ export function InterviewVoicePage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-center mb-10 min-h-[80px]"
+                className="text-center mb-6 min-h-[60px]"
               >
-                <h1 className="text-xl md:text-2xl font-display font-light leading-relaxed max-w-2xl mx-auto italic text-white/80">
+                <h1 className="text-lg md:text-xl font-display font-light leading-relaxed max-w-2xl mx-auto italic text-white/90">
                    "{currentAssistantSpeech}"
                 </h1>
               </motion.div>
@@ -303,17 +303,17 @@ export function InterviewVoicePage() {
         </div>
 
         {/* Global Controls */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6">
            <button
             onClick={() => navigate(`/interview/${id}/chat`)}
-            className="px-10 py-3 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 group"
+            className="px-8 py-2.5 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 group"
           >
             <MessageSquare className="w-4 h-4 text-accent-blue" />
             Switch to Chat
           </button>
           <button
             onClick={handleEnd}
-            className="px-10 py-3 rounded-full bg-accent-red/10 hover:bg-accent-red/20 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-accent-red/20 text-accent-red"
+            className="px-8 py-2.5 rounded-full bg-accent-red/10 hover:bg-accent-red/20 transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] border border-accent-red/20 text-accent-red"
           >
             Abort Session
           </button>
