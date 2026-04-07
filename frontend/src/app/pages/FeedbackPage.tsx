@@ -49,6 +49,7 @@ export function FeedbackPage() {
           }
         }
         setFeedback(data);
+        setIsLoading(false);
       } catch (err) {
         console.warn("Feedback API failed. Activating presentation failsafe data.", err);
         // Premium presentation dummy data
@@ -78,9 +79,6 @@ export function FeedbackPage() {
           } as any);
           setIsLoading(false);
         }, 1500); // Simulate processing time
-        return;
-      } finally {
-        setIsLoading(false);
       }
     }
     loadFeedback();
