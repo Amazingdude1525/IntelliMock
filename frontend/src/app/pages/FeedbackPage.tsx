@@ -159,7 +159,13 @@ export function FeedbackPage() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      <div className="fixed inset-0 z-0 opacity-30">
+      <div 
+        className="fixed inset-0 z-0 opacity-30"
+        style={{
+          maskImage: 'radial-gradient(circle at center, black 30%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 70%)'
+        }}
+      >
         <SplineScene scene="https://prod.spline.design/KChzoSKgLSxtlaux/scene.splinecode" />
       </div>
       <GridOverlay />
