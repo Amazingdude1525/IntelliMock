@@ -2,6 +2,8 @@
 
 > **Elevate your career readiness with real-time biometric feedback and industry-standard AI intelligence.**
 
+[🚀 Live Demo](https://intellimock-lake.vercel.app/)
+
 IntelliMock is a high-fidelity recruitment preparation platform that simulates real-world interview environments. Featuring **Elite Mode**, it provides an immersive 3D-integrated experience with precise behavioral analytics.
 
 ## 🚀 Key Features

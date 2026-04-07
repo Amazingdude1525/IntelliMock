@@ -36,7 +36,7 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-7xl md:text-8xl font-display font-black leading-[0.9] mb-8 tracking-tighter">
+            <h1 className="text-5xl md:text-7xl font-display font-black leading-[0.9] mb-8 tracking-tighter">
               The Future of{" "}
               <span className="bg-gradient-to-r from-accent-purple via-accent-blue to-accent-green bg-clip-text text-transparent">
                 Career Intelligence
