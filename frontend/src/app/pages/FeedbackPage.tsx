@@ -15,7 +15,7 @@ import {
   Radar, 
   ResponsiveContainer 
 } from "recharts";
-import { getFeedback, setAuthToken } from "../../lib/api";
+import { getFeedback, generateFeedback, setAuthToken } from "../../lib/api";
 import { SplineScene } from "../components/SplineScene";
 import type { Feedback } from "../../types";
 
@@ -27,6 +27,7 @@ export function FeedbackPage() {
   
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     async function loadFeedback() {
@@ -38,10 +39,21 @@ export function FeedbackPage() {
         const token = await getToken();
         if (token) setAuthToken(token);
         
-        const data = await getFeedback(sessionId);
+        let data;
+        try {
+          data = await getFeedback(sessionId);
+        } catch (err: any) {
+          if (err.response?.status === 404) {
+            // Feedback doesn't exist yet, generate it
+            data = await generateFeedback(sessionId);
+          } else {
+            throw err;
+          }
+        }
         setFeedback(data);
       } catch (err) {
-        console.error("Failed to load feedback", err);
+        console.error("Failed to load or generate feedback", err);
+        setErrorMsg('Failed to analyze session. It may be too short or the AI service is overloaded.');
       } finally {
         setIsLoading(false);
       }
@@ -49,13 +61,26 @@ export function FeedbackPage() {
     loadFeedback();
   }, [sessionId, getToken, navigate]);
 
-  if (isLoading || !feedback) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
            <Loader2 className="w-12 h-12 text-accent-purple animate-spin mx-auto mb-4" />
-           <p className="text-text-muted font-mono animate-pulse tracking-widest uppercase text-xs">Decrypting Behavioral Signatures...</p>
+           <p className="text-text-muted font-mono animate-pulse tracking-widest uppercase text-xs">Decrypting Behavioral Signatures & Generating Report...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (errorMsg || !feedback) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center space-y-6">
+        <AlertCircle className="w-16 h-16 text-accent-red" />
+        <h2 className="text-2xl font-bold font-display">Analysis Failed</h2>
+        <p className="text-text-muted">{errorMsg || "Unable to retrieve feedback report."}</p>
+        <Link to="/dashboard" className="px-6 py-3 rounded-full bg-surface-alt font-bold text-xs uppercase tracking-widest hover:bg-surface">
+          Return Home
+        </Link>
       </div>
     );
   }

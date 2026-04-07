@@ -112,11 +112,11 @@ export function InterviewChatPage() {
   const questionNumber = Math.max(1, messages.filter(m => m.role === 'user').length + 1);
 
   return (
-    <div className="h-screen bg-[#0a0a0f] text-white relative flex overflow-hidden">
+    <div className="h-[100dvh] bg-[#0a0a0f] text-white relative flex overflow-hidden">
       <GridOverlay />
 
       {/* ─── LEFT PANEL: Sidebar ─── */}
-      <div className="w-[360px] border-r border-white/[0.06] bg-[#0f0f18]/80 backdrop-blur-xl relative z-10 p-6 flex flex-col">
+      <div className="w-[360px] border-r border-white/[0.06] bg-[#0f0f18]/80 backdrop-blur-xl relative z-10 p-6 flex flex-col overflow-y-auto scrollbar-hide">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-5">
             <h1 className="text-xl font-bold tracking-tight">Interview Session</h1>

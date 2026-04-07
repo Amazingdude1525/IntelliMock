@@ -58,10 +58,10 @@ export function GlobalLoader({ onComplete }: { onComplete?: () => void }) {
                     stiffness: 200,
                   }}
                   className={`text-5xl md:text-7xl font-bold tracking-tighter ${
-                    i >= 6 ? 'text-[#7C3AED]' : 'text-white'
+                    i >= 7 ? 'text-[#7C3AED]' : 'text-white'
                   }`}
                   style={{ 
-                    textShadow: i >= 6 ? '0 0 30px rgba(124,58,237,0.5)' : '0 0 20px rgba(255,255,255,0.1)',
+                    textShadow: i >= 7 ? '0 0 30px rgba(124,58,237,0.5)' : '0 0 20px rgba(255,255,255,0.1)',
                     fontFamily: "'Syne', 'Inter', sans-serif",
                   }}
                 >

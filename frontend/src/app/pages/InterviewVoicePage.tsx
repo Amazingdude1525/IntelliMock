@@ -184,8 +184,10 @@ export function InterviewVoicePage() {
   //  RENDER
   // ═══════════════════════════════════════════════
   return (
-    <div className="h-screen bg-[#0a0a0f] text-white relative overflow-hidden flex flex-col">
-      <GridOverlay />
+    <div className="min-h-screen bg-[#0a0a0f] text-white relative overflow-y-auto flex flex-col">
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <GridOverlay />
+      </div>
       <Navbar />
 
       <AnimatePresence mode="wait">
