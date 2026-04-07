@@ -66,13 +66,19 @@ export function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative h-[500px] lg:h-[600px] w-full overflow-hidden translate-x-8 lg:translate-x-20"
+            className="relative h-[500px] lg:h-[600px] w-full translate-x-4 lg:translate-x-16"
           >
-            {/* Extended absolute wrapper to push Spline's watermark outside of the visible area */}
-            <div className="absolute -inset-x-[15%] -inset-y-[15%] pointer-events-none">
+            {/* Radial mask wrapper to feather the Spline background edges and hide the bottom-right logo completely */}
+            <div 
+              className="absolute -inset-x-20 -inset-y-10 pointer-events-none flex items-center justify-center"
+              style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 65% 65% at 50% 50%, black 50%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 65% 65% at 50% 50%, black 50%, transparent 100%)'
+              }}
+            >
               <SplineScene 
                 scene="https://prod.spline.design/KChzoSKgLSxtlaux/scene.splinecode" 
-                className="w-full h-full scale-100 lg:scale-110 select-none"
+                className="w-[120%] h-[120%] scale-[1.1] lg:scale-[1.25] select-none"
               />
             </div>
             
