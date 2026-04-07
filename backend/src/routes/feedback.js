@@ -52,11 +52,11 @@ feedbackRouter.post('/generate', async (req, res) => {
         strengths, improvements, career_roadmap, raw_feedback
       ) VALUES (
         ${sessionId}, ${s.user_id},
-        ${feedbackData.clarity_score}, ${feedbackData.depth_score},
-        ${feedbackData.communication_score}, ${feedbackData.confidence_score || 0},
-        ${feedbackData.overall_score},
-        ${feedbackData.strengths}, ${feedbackData.improvements},
-        ${JSON.stringify(feedbackData.career_roadmap)}, ${rawFeedback}
+        ${feedbackData.clarity_score || 0}, ${feedbackData.depth_score || 0},
+        ${feedbackData.communication_score || 0}, ${feedbackData.confidence_score || 0},
+        ${feedbackData.overall_score || 0},
+        ${feedbackData.strengths || []}, ${feedbackData.improvements || []},
+        ${JSON.stringify(feedbackData.career_roadmap || { immediate: [], short_term: [], long_term: [] })}, ${rawFeedback}
       )
       RETURNING *
     `;

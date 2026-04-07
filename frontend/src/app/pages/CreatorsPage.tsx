@@ -79,11 +79,11 @@ export function CreatorsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.15 }}
               >
-                <GlassCard className="p-8 h-full flex flex-col text-left group hover:border-[#7C3AED]/50 transition-all duration-500">
+                <GlassCard className="p-8 h-full flex flex-col text-center group hover:border-[#7C3AED]/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(124,58,237,0.1)] transition-all duration-500">
                   {/* Photo / Initial */}
-                  <div className="mb-8">
+                  <div className="mb-8 flex justify-center">
                     <div
-                      className="w-20 h-20 rounded-2xl flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500 overflow-hidden"
+                      className="w-32 h-32 rounded-full flex items-center justify-center border-4 border-white/10 group-hover:scale-[1.15] group-hover:border-[#7C3AED]/50 transition-all duration-500 overflow-hidden shadow-2xl relative"
                       style={{ background: `linear-gradient(135deg, ${creator.color}20, ${creator.color}05)` }}
                     >
                       <img
@@ -91,10 +91,9 @@ export function CreatorsPage() {
                         alt={creator.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          // Fallback to initial if photo not found
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
-                          target.parentElement!.innerHTML = `<span class="text-3xl font-bold" style="color:${creator.color}">${creator.initial}</span>`;
+                          target.parentElement!.innerHTML = `<span class="text-5xl font-bold" style="color:${creator.color}">${creator.initial}</span>`;
                         }}
                       />
                     </div>
@@ -110,7 +109,7 @@ export function CreatorsPage() {
                     {creator.bio}
                   </p>
 
-                  <div className="flex items-center gap-4 border-t border-white/5 pt-6">
+                  <div className="flex items-center justify-center gap-4 border-t border-white/5 pt-6 mt-auto">
                     <a href={creator.links.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <Github className="w-4 h-4" />
                     </a>
@@ -132,8 +131,8 @@ export function CreatorsPage() {
             transition={{ delay: 0.8 }}
             className="mt-32 text-center"
           >
-            <p className="text-xs font-mono text-gray-600 uppercase tracking-[0.5em]">
-              VIT Bhopal University · B.Tech CSE · 2025–2029
+            <p className="text-[10px] md:text-xs font-mono text-gray-500 uppercase tracking-[0.3em] md:tracking-[0.5em]">
+              BUILT WITH PRECISION · ELITE PERFORMANCE ARCHITECTURE
             </p>
           </motion.div>
         </div>
